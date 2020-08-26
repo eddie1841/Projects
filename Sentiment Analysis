@@ -1,0 +1,42 @@
+# Sentiment analysis
+library(syuzhet) #sentiment extraction
+library(lubridate) #parsing date and time
+library(ggplot2) #For graphical plots
+library(scales) #map data to aesthetics
+library(reshape2) #Transofrm data between wide and long formats
+library(dplyr) #For data manipulation
+
+# Read file
+mysheets <- read_excel_allsheets("C:/Users/sharm/Documents/Bang the Table/Main Project/New File.xlsx")
+
+survey_tool_2 <- mysheets[['Future of Futreville']]
+exp <- survey_tool_2$`Most important when you think about Futureville in 2030?`
+is.character(exp)
+
+# Obtain sentiment scores
+s <- get_nrc_sentiment(exp)
+head(s)
+exp[6]
+exp
+get_nrc_sentiment(exp[5])
+s
+
+NewFile <- merge(response = "Response ID" ,s = "anger, anticipation, disgust, fear, joy, sadness, surprise, trust, negative, positive")
+NewFile
+rowMode(s)
+
+
+# Bar plot
+barplot(colSums(s),
+        las = 2,
+        col = rainbow(10),
+        ylab = 'Count',
+        main = 'Sentiment Scores for Austin trial users')
+
+
+#Writing data in exccel
+library("xlsx")
+write.xlsx(s, file = "C:/Users/sharm/Documents/Bang the Table/Main Project/SentimentIdeafor2030.xlsx",
+           sheetName = "WithSentiments", append = FALSE)
+
+write.csv(s, file = "C:/Users/sharm/Documents/Bang the Table/Austin/NewSentiments1.csv", row.names = FALSE)
